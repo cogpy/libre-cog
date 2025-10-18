@@ -169,7 +169,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error getting cognitive state: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.get(
             "/cognitive/attention",
@@ -196,7 +196,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error getting attention focus: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.get(
             "/cognitive/atomspace",
@@ -230,7 +230,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error getting atomspace stats: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.get(
             "/cognitive/evolution",
@@ -253,7 +253,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error getting evolution status: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.post(
             "/cognitive/learn",
@@ -289,7 +289,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error learning from interaction: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.get(
             "/cognitive/export",
@@ -317,7 +317,7 @@ class ChatRouter(APIRouter):
                     })
             except Exception as e:
                 log.error(f"Error exporting cognitive knowledge: {e}")
-                return JSONResponse({"error": str(e)}, status_code=500)
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
 
         @self.get(
             "/documents",
