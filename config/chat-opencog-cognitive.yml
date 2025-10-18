@@ -1,0 +1,93 @@
+# OpenCog Cognitive Chatbot Configuration
+# This configuration enables the full cognitive architecture with AtomSpace, ECAN, and Moses
+
+llm:
+  model_path: ./models/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
+  model_download: https://huggingface.co/TheBloke/Mixtral-8x7B-Instruct-v0.1-GGUF/resolve/main/mixtral-8x7b-instruct-v0.1.Q2_K.gguf
+  temperature: 0.1     # Slightly higher for more creative cognitive responses
+  max_new_tokens: 1024
+  prompt_variables: [input, history, cognitive_context]
+  prompt_template: |
+    You are a cognitive AI assistant powered by OpenCog's AtomSpace knowledge representation and ECAN attention mechanisms. You can reason about concepts, relationships, and patterns in a structured way.
+    
+    Current cognitive state: {cognitive_context}
+    
+    {history}
+    User: {input}
+    Cognitive Assistant:
+
+# OpenCog Cognitive Configuration
+opencog:
+  enabled: true
+  
+  # AtomSpace Configuration
+  atomspace_max_size: 100000
+  
+  # ECAN Attention Agent Configuration
+  attention_agent_enabled: true
+  attention_cycle_interval: 1.0      # Run attention cycle every second
+  attention_focus_boundary: 10.0     # STI threshold for attentional focus
+  attention_bank: 1000.0             # Total attention currency
+  importance_decay_rate: 0.005       # Rate of importance decay per cycle
+  
+  # Moses Evolution Engine Configuration
+  moses_enabled: true
+  moses_population_size: 50          # Size of program population
+  moses_mutation_rate: 0.1          # Probability of mutation
+  moses_crossover_rate: 0.7         # Probability of crossover
+  moses_elitism_rate: 0.2           # Fraction of top performers to keep
+  moses_evolution_interval: 5.0     # Evolve every 5 seconds
+  
+  # Cognitive Reasoning Configuration
+  cognitive_reasoning_enabled: true
+  pattern_matching_enabled: true
+  forward_chaining_enabled: true
+  backward_chaining_enabled: true
+  max_inference_depth: 3            # Maximum depth for backward chaining
+
+# Optional: Vector store for hybrid reasoning (cognitive + retrieval)
+vector:
+  vector_path: ./vectorstore/cognitive_db_faiss
+  vector_download: null
+  embeddings_path: ./embeddings/all-MiniLM-L6-v2
+  embeddings_download: https://public.ukp.informatik.tu-darmstadt.de/reimers/sentence-transformers/v0.2/all-MiniLM-L6-v2.zip
+  documents_path: ./documents
+  chunk_size: 500
+  chunk_overlap: 50
+  chain_type: stuff
+  search_type: similarity
+  return_sources_count: 2
+  score_threshold: null
+
+info:
+  title: "Libre-Cog: OpenCog Cognitive Chatbot"
+  version: "1.0.0"
+  description: |
+    Cognitive chatbot powered by OpenCog's AtomSpace knowledge representation,
+    ECAN attention mechanisms, and Moses evolutionary program synthesis.
+    
+    **Cognitive Features:**
+    - Structured knowledge representation in AtomSpace
+    - Economic attention allocation via ECAN agents  
+    - Self-improving reasoning through Moses evolution
+    - Forward and backward chaining inference
+    - Pattern matching and similarity reasoning
+    
+    Powered by [OpenCog](https://opencog.org), [LangChain](https://python.langchain.com) and [llama.cpp](https://github.com/ggerganov/llama.cpp)
+  examples:
+  - What concepts are currently in your attentional focus?
+  - How do you represent knowledge about machine learning?
+  - Can you show me the reasoning path for your last answer?
+  - What patterns have you learned from our conversations?
+  - How is your cognitive state evolving over time?
+  - What relationships exist between learning and intelligence?
+  favicon: https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png
+  repository_url: https://github.com/cogpy/libre-cog
+  public_url: https://cog.semanticscience.org
+  contact:
+    name: OpenCog Community
+    email: contact@opencog.org
+  license_info:
+    name: MIT license
+    url: https://raw.github.com/cogpy/libre-cog/main/LICENSE.txt
+  workers: 2  # Fewer workers for cognitive processing

@@ -10,6 +10,7 @@ from libre_chat import __version__
 from libre_chat.conf import default_conf, parse_conf
 from libre_chat.endpoint import ChatEndpoint
 from libre_chat.llm import Llm
+from libre_chat.cognitive_llm import CognitiveLlm
 from libre_chat.utils import BOLD, END, log, log_format
 
 cli = typer.Typer(help="Deploy API and web UI for LLMs, such as Llama 2, using langchain.")
@@ -32,7 +33,15 @@ def start(
     log_config["formatters"]["access"]["fmt"] = log_format
     log_config["formatters"]["default"]["fmt"] = log_format
     conf = parse_conf(config)
-    llm = Llm(conf=conf)
+    
+    # Use CognitiveLlm if OpenCog is enabled, otherwise use standard Llm
+    if hasattr(conf, 'opencog') and conf.opencog.enabled:
+        log.info("🧠 Starting with OpenCog cognitive capabilities enabled")
+        llm = CognitiveLlm(conf=conf)
+    else:
+        log.info("🤖 Starting with standard LLM capabilities")
+        llm = Llm(conf=conf)
+    
     app = ChatEndpoint(llm=llm, conf=conf)
     uvicorn.run(
         app,
@@ -70,7 +79,13 @@ def build(
     )
     if conf.vector.vector_path and os.path.exists(conf.vector.vector_path):
         shutil.rmtree(conf.vector.vector_path)
-    Llm(conf=conf)
+    
+    # Use CognitiveLlm for building vectorstore if OpenCog is enabled
+    if hasattr(conf, 'opencog') and conf.opencog.enabled:
+        CognitiveLlm(conf=conf)
+    else:
+        Llm(conf=conf)
+    
     log.info(f"Documents successfully vectorized in {BOLD}{conf.vector.vector_path}{END}")
 
 
