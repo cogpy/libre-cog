@@ -77,6 +77,27 @@ class SettingsAuth(BaseConf):
     regular_users: List[str] = []
 
 
+class SettingsOpenCog(BaseConf):
+    enabled: bool = True
+    atomspace_max_size: int = 100000
+    attention_agent_enabled: bool = True
+    attention_cycle_interval: float = 1.0
+    attention_focus_boundary: float = 10.0
+    attention_bank: float = 1000.0
+    importance_decay_rate: float = 0.005
+    moses_enabled: bool = True
+    moses_population_size: int = 50
+    moses_mutation_rate: float = 0.1
+    moses_crossover_rate: float = 0.7
+    moses_elitism_rate: float = 0.2
+    moses_evolution_interval: float = 5.0
+    cognitive_reasoning_enabled: bool = True
+    pattern_matching_enabled: bool = True
+    forward_chaining_enabled: bool = True
+    backward_chaining_enabled: bool = True
+    max_inference_depth: int = 3
+
+
 class ChatConf(BaseConf):
     conf_path: str = "chat.yml"
     conf_url: Optional[str] = None
@@ -84,6 +105,7 @@ class ChatConf(BaseConf):
     vector: SettingsVector = SettingsVector()
     info: SettingsInfo = SettingsInfo()
     auth: SettingsAuth = SettingsAuth()
+    opencog: SettingsOpenCog = SettingsOpenCog()
 
 
 default_conf = ChatConf()

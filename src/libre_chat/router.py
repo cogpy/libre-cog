@@ -148,6 +148,177 @@ class ChatRouter(APIRouter):
                 }
             )
 
+        # Cognitive endpoints for OpenCog integration
+        @self.get(
+            "/cognitive/state",
+            name="Get Cognitive State", 
+            description="Get the current state of the cognitive system including AtomSpace, attention, and evolution status",
+            response_model=Dict[str, Any],
+            tags=["cognitive"],
+        )
+        def get_cognitive_state() -> JSONResponse:
+            """Get current cognitive state of the system."""
+            try:
+                if hasattr(self.llm, 'get_cognitive_state'):
+                    state = self.llm.get_cognitive_state()
+                    return JSONResponse(state)
+                else:
+                    return JSONResponse({
+                        "status": "not_available", 
+                        "message": "Cognitive features not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error getting cognitive state: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
+        @self.get(
+            "/cognitive/attention",
+            name="Get Attention Focus",
+            description="Get atoms currently in attentional focus",
+            response_model=Dict[str, Any], 
+            tags=["cognitive"],
+        )
+        def get_attention_focus() -> JSONResponse:
+            """Get current attentional focus."""
+            try:
+                if (hasattr(self.llm, 'attention_agent') and 
+                    self.llm.attention_agent is not None):
+                    focus_atoms = self.llm.attention_agent.get_attentional_focus()
+                    return JSONResponse({
+                        "focus_atoms": [str(atom) for atom in focus_atoms],
+                        "focus_size": len(focus_atoms),
+                        "attention_bank": self.llm.attention_agent.attention_bank
+                    })
+                else:
+                    return JSONResponse({
+                        "status": "not_available",
+                        "message": "Attention agent not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error getting attention focus: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
+        @self.get(
+            "/cognitive/atomspace",
+            name="Get AtomSpace Statistics",
+            description="Get statistics about the current AtomSpace",
+            response_model=Dict[str, Any],
+            tags=["cognitive"],
+        )
+        def get_atomspace_stats() -> JSONResponse:
+            """Get AtomSpace statistics."""
+            try:
+                if (hasattr(self.llm, 'atomspace') and 
+                    self.llm.atomspace is not None):
+                    top_atoms = self.llm.atomspace.get_atoms_by_importance(limit=10)
+                    return JSONResponse({
+                        "total_atoms": self.llm.atomspace.size(),
+                        "top_concepts": [
+                            {
+                                "atom": str(atom),
+                                "importance": atom.importance,
+                                "truth_value": atom.get_truth_value()
+                            }
+                            for atom in top_atoms
+                        ],
+                        "atom_types": list(self.llm.atomspace.atom_types)
+                    })
+                else:
+                    return JSONResponse({
+                        "status": "not_available",
+                        "message": "AtomSpace not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error getting atomspace stats: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
+        @self.get(
+            "/cognitive/evolution",
+            name="Get Evolution Status",
+            description="Get status of the Moses evolution engine",
+            response_model=Dict[str, Any],
+            tags=["cognitive"],
+        )
+        def get_evolution_status() -> JSONResponse:
+            """Get Moses evolution status."""
+            try:
+                if (hasattr(self.llm, 'moses_engine') and 
+                    self.llm.moses_engine is not None):
+                    summary = self.llm.moses_engine.get_evolution_summary()
+                    return JSONResponse(summary)
+                else:
+                    return JSONResponse({
+                        "status": "not_available",
+                        "message": "Moses evolution engine not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error getting evolution status: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
+        @self.post(
+            "/cognitive/learn",
+            name="Learn from Interaction",
+            description="Provide feedback to help the system learn from interactions",
+            response_model=Dict[str, str],
+            tags=["cognitive"],
+        )
+        def learn_from_interaction(
+            interaction_data: Dict[str, Any] = Body(..., example={
+                "query": "What is machine learning?",
+                "response": "Machine learning is a subset of AI...", 
+                "feedback": "good explanation"
+            })
+        ) -> JSONResponse:
+            """Learn from user interaction and feedback."""
+            try:
+                if hasattr(self.llm, 'learn_from_interaction'):
+                    query = interaction_data.get("query", "")
+                    response = interaction_data.get("response", "")
+                    feedback = interaction_data.get("feedback")
+                    
+                    self.llm.learn_from_interaction(query, response, feedback)
+                    
+                    return JSONResponse({
+                        "message": "Learning from interaction completed",
+                        "status": "success"
+                    })
+                else:
+                    return JSONResponse({
+                        "status": "not_available",
+                        "message": "Learning capability not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error learning from interaction: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
+        @self.get(
+            "/cognitive/export",
+            name="Export Cognitive Knowledge",
+            description="Export cognitive knowledge for analysis or backup",
+            response_model=Dict[str, Any],
+            tags=["cognitive"],
+        )
+        def export_cognitive_knowledge() -> JSONResponse:
+            """Export cognitive knowledge."""
+            try:
+                if hasattr(self.llm, 'export_cognitive_knowledge'):
+                    export_data = self.llm.export_cognitive_knowledge()
+                    if export_data:
+                        return JSONResponse(export_data)
+                    else:
+                        return JSONResponse({
+                            "status": "no_data",
+                            "message": "No cognitive data available for export"
+                        })
+                else:
+                    return JSONResponse({
+                        "status": "not_available",
+                        "message": "Cognitive export not enabled"
+                    })
+            except Exception as e:
+                log.error(f"Error exporting cognitive knowledge: {e}")
+                return JSONResponse({"error": "Internal server error"}, status_code=500)
+
         @self.get(
             "/documents",
             description="""List documents uploaded to the server.""",

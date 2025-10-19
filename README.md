@@ -1,6 +1,6 @@
 <div align="center">
 
-# <span><img height="30" src="https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png"></span> Libre Chat
+# <span><img height="30" src="https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/logo.png"></span> Libre-Cog: OpenCog Cognitive Chatbot
 
 [![Test package](https://github.com/vemonet/libre-chat/actions/workflows/test.yml/badge.svg)](https://github.com/vemonet/libre-chat/actions/workflows/test.yml) [![Coverage](https://coverage-badge.samuelcolvin.workers.dev/vemonet/libre-chat.svg)](https://coverage-badge.samuelcolvin.workers.dev/redirect/vemonet/libre-chat)
 
@@ -8,10 +8,14 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/libre-chat.svg?logo=python&label=Python&logoColor=silver)](https://pypi.org/project/libre-chat/)
 [![License](https://img.shields.io/pypi/l/libre-chat)](https://github.com/vemonet/libre-chat/blob/main/LICENSE.txt) [![Pull requests welcome](https://img.shields.io/badge/pull%20requests-welcome-brightgreen)](https://github.com/vemonet/libre-chat/fork)
 
-Easily configure and deploy a **fully self-hosted chatbot web service** based on open source Large Language Models (LLMs), such as [Mixtral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), without the need for knowledge in machine learning.
+Easily configure and deploy a **fully self-hosted cognitive chatbot web service** powered by [OpenCog](https://opencog.org) and open source Large Language Models (LLMs), such as [Mixtral](https://mistral.ai/news/mixtral-of-experts) or [Llama 2](https://ai.meta.com/llama/), featuring advanced cognitive capabilities including structured knowledge representation, attention mechanisms, and self-improving reasoning.
 
 </div>
 
+- 🧠 **Cognitive AI Architecture**: Powered by OpenCog's AtomSpace for structured knowledge representation and reasoning
+- 🎯 **Attention Mechanisms**: ECAN (Economic Cognitive Attention Network) for intelligent focus management
+- 🧬 **Self-Improving**: Moses evolutionary engine for continuous learning and program synthesis
+- 🔗 **Advanced Reasoning**: Forward/backward chaining, pattern matching, and inference capabilities
 - 🌐 Free and Open Source chatbot web service with UI and API.
 - 🏡 Fully self-hosted, not tied to any service, and offline capable. Forget about API keys! Models and embeddings can be pre-downloaded, and the training and inference processes can run off-line if necessary.
 - 🔌 Web API described using OpenAPI specs: GET/POST operations, websocket for streaming response
@@ -19,20 +23,76 @@ Easily configure and deploy a **fully self-hosted chatbot web service** based on
 - 🚀 Easy to setup, no need to program, just configure the service with a [YAML](https://yaml.org/) file, and start it with 1 command
 - 📦 Available as a `pip` package 🐍, or `docker` image 🐳
 - 🐌 No need for GPU, this will work even on your laptop CPU! That said, just running on CPUs can be quite slow (up to 1min to answer a documents-base question on recent laptops).
-- 🦜 Powered by [`LangChain`](https://python.langchain.com) and [`llama.cpp`](https://github.com/ggerganov/llama.cpp) to perform inference locally.
-- 🤖 Various types of agents can be deployed:
+- 🦜 Powered by [OpenCog](https://opencog.org), [`LangChain`](https://python.langchain.com) and [`llama.cpp`](https://github.com/ggerganov/llama.cpp) to perform inference locally.
+- 🤖 Various types of cognitive agents can be deployed:
+  - **🧠 Cognitive Reasoning**: Uses AtomSpace knowledge representation with attention-guided inference
   - **💬 Generic conversation**: do not need any additional training, just configure settings such as the template prompt
   - **📚 Documents-based question answering** (experimental): automatically build similarity vectors from documents uploaded through the API UI, the chatbot will use them to answer your question, and return which documents were used to generate the answer (PDF, CSV, HTML, JSON, markdown, and more supported).
-- 🔍 Readable logs to understand what is going on.
+  - **🎯 Hybrid Mode**: Combines cognitive reasoning with traditional LLM responses for optimal performance
+- 🔍 Readable logs to understand what is going on, including cognitive state monitoring.
 
 ## 📖 Documentation
 
-For more details on how to use Libre Chat check the documentation at **[vemonet.github.io/libre-chat](http://vemonet.github.io/libre-chat)**
+For more details on how to use Libre-Cog check the documentation at **[cogpy/libre-cog](https://github.com/cogpy/libre-cog)** and the **[OpenCog Integration Guide](docs/opencog-integration.md)**
 
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot.png)
 
 ![UI screenshot](https://raw.github.com/vemonet/libre-chat/main/docs/docs/assets/screenshot-light.png)
+
+## 🧠 Cognitive Features Quick Start
+
+To deploy the cognitive chatbot with OpenCog capabilities:
+
+```bash
+# Clone the repository
+git clone https://github.com/cogpy/libre-cog.git
+cd libre-cog
+
+# Install dependencies
+pip install -e .
+
+# Start with cognitive configuration
+libre-chat start config/chat-opencog-cognitive.yml
+```
+
+### Cognitive API Endpoints
+
+Once running, access the cognitive features:
+
+```bash
+# Check cognitive system status
+curl http://localhost:8000/cognitive/state
+
+# View current attentional focus
+curl http://localhost:8000/cognitive/attention
+
+# Monitor evolution progress
+curl http://localhost:8000/cognitive/evolution
+
+# Provide learning feedback
+curl -X POST http://localhost:8000/cognitive/learn \
+  -H "Content-Type: application/json" \
+  -d '{"query": "What is AI?", "response": "AI is...", "feedback": "good"}'
+```
+
+### Example Cognitive Interaction
+
+```python
+import requests
+
+# Ask a cognitive question
+response = requests.post("http://localhost:8000/prompt", json={
+    "prompt": "What relationships exist between learning and intelligence?"
+})
+
+result = response.json()
+print("Response:", result["result"])
+
+# Check what concepts the AI is currently focusing on
+attention = requests.get("http://localhost:8000/cognitive/attention")
+print("Current focus:", attention.json()["focus_atoms"])
+```
 
 ## 🏗️ Work in progress
 
